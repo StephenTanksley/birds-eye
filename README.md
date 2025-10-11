@@ -5,4 +5,20 @@ Bird's Eye is an attempt to integrate data engineering, Machine Learning (hereaf
 Here's what I imagine:
 
 1. Navigate to the homepage of various news organizations, scrape all links to articles within subheadings
-2. Push JSON to a Kafka topic for each organization with the following metadata (organization, URL, date) and data (headline)
+2. Write to a PostgreSQL database for each organization with the following metadata (organization, URL, timestamp) and data (headline)
+3. Run aggregation jobs on all organizations, do sentiment analysis on each headline, assign it a positive/negative score.
+4. Keep track of significant words which pop up across global state, use that global state to populate word cloud.
+5. Find a way to visualize the word cloud. 
+   - Other ideas would be to link words in the cloud to the articles which generated those impressions and to embed the metadata into a popup for each word.
+
+
+
+PROBLEMS:
+
+The scraping profile for each page is going to be a little bit different for every one. 
+I'll probably have to create a different set of metadata in a config for each source.
+The idea here will be to have a list of all sources, then use the source type to load up the appropriate config.
+
+
+
+Step 1: Create a scraper.
