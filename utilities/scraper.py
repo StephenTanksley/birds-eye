@@ -148,4 +148,4 @@ if __name__ == "__main__":
 # https://github.com/itsgorain/100DaysOfNLP/blob/master/twitter_trump_hostile_clf_interpretable_extreme.ipynb
 # https://github.com/itsgorain/100DaysOfNLP/blob/master/nlp_different_authors.ipynb
 
-# It would be super cool to see
+# It would be super cool to see how this plays out over time.

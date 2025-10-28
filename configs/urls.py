@@ -30,3 +30,10 @@ urls = [
     "https://www.salon.com",
     "https://chicago.suntimes.com/"
 ]
+
+source_ids = [num for num in range(1, len(urls) + 1)]
+
+source_list = zip(source_ids, urls)
+
+if __name__ == '__main__':
+    print(*source_list)
