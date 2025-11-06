@@ -4,7 +4,8 @@ from playwright.async_api import async_playwright, BrowserContext
 from asyncio import gather, run as async_run, Semaphore
 from time import perf_counter
 from datetime import datetime, timezone, date
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
+from wordcloud import STOPWORDS
 
 # import list of URLs from urls.py module
 from configs.urls import urls
@@ -24,6 +25,7 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
         links = []
         seen = set()
         page = await context.new_page()
+        stopwords = set(STOPWORDS)
         try:
             await page.goto(url, wait_until="domcontentloaded")
 
@@ -54,17 +56,24 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
                 if len(text.split(" ")) < 8:
                     continue
 
+                if '.mp3' in text or '.mp3' in href:
+                    continue
+
                 # Filtering conditions - If the URL ends with a trailing slash, get rid of the slash
                 if href[-1] == '/':
                     href = href.rstrip('/')
+
+                if href.endswith('.html'):
+                    href = href.rstrip('.html')
 
                 # Filtering conditions - If the URL ends with numbers, strip the numbers out
                 if href[-1].isnumeric():
                     href = href.rsplit('/')[-2]
 
-
-                keywords = href.rsplit("/", maxsplit=1)[-1]
-                keywords = keywords.split('-')
+                keywords = urlparse(href).path
+                keywords = keywords.rsplit("/", maxsplit=1)[-1]
+                # keywords = [word for word in keywords.split('-') if word.isalpha() and word not in stopwords]
+                keywords = [word for word in keywords.split('-') if word not in stopwords]
 
                 # Add items - Add the url to seen and then the full object to links
                 seen.add(href)
@@ -149,3 +158,6 @@ if __name__ == "__main__":
 # https://github.com/itsgorain/100DaysOfNLP/blob/master/nlp_different_authors.ipynb
 
 # It would be super cool to see how this plays out over time.
+
+# https://www.artiba.org/blog/named-entity-recognition-in-nltk-a-practical-guide
+# https://towardsdatascience.com/nlp-topic-modeling-to-identify-clusters-ca207244d04f/
