@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 from playwright.async_api import async_playwright, BrowserContext
 from asyncio import gather, run as async_run, Semaphore
@@ -59,6 +60,9 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
                 if '.mp3' in text or '.mp3' in href:
                     continue
 
+                if 'a4b6' in href:
+                    continue
+
                 # Filtering conditions - If the URL ends with a trailing slash, get rid of the slash
                 if href[-1] == '/':
                     href = href.rstrip('/')
@@ -75,6 +79,9 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
                 # keywords = [word for word in keywords.split('-') if word.isalpha() and word not in stopwords]
                 keywords = [word for word in keywords.split('-') if word not in stopwords]
 
+                if len(keywords) < 4:
+                    continue
+
                 # Add items - Add the url to seen and then the full object to links
                 seen.add(href)
                 links.append({
@@ -88,7 +95,7 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
             print(f"{datetime.now()} || [{end_time:.3f}] finished {url} with {len(links)} links in {end_time - start_time:.2f}s")
 
         except Exception as e:
-            print(f"⚠️ Error fetching {url}: {e}")
+            print(f"Error fetching {url}: {e}")
         finally:
             await page.close()
 
@@ -125,8 +132,8 @@ async def main(outlet_urls: list[str] = None, results_dict: dict = None) -> None
                 if site not in results_dict:
                     results_dict[site] = links
 
-        print(f"{datetime.now()} || \n🔗 {site}: {len(links)} valid links found")
-        for link in links:  # print a few sample links per site
+        print(f"{datetime.now()} || \n {site}: {len(links)} valid links found")
+        for link in links:
             print(f"  - {link['url']}")
 
     total_time = perf_counter() - start_time
@@ -134,12 +141,16 @@ async def main(outlet_urls: list[str] = None, results_dict: dict = None) -> None
 
 
 if __name__ == "__main__":
-    if f"{date.today()}.json" not in os.listdir("../data/"):
+    working_dir = os.getcwd().rsplit(sep='/', maxsplit=1)[0]
+    data_dir = os.listdir(os.path.join(working_dir, 'data'))
+    if f"{date.today()}.json" not in data_dir:
         print(f"{datetime.now()} || No URLs detected for current date, adding now")
         results = {} # This gets passed in to main
         async_run(main(outlet_urls=urls, results_dict=results))
 
-        with open(f"../data/{date.today()}.json", "w+") as file:
+        new_json_file = os.path.join(working_dir, 'data', f"{date.today()}.json")
+
+        with open(new_json_file, "w+") as file:
             json.dump(results, file)
     else:
         print(f"{datetime.now()} || Current headlines found, closing")
