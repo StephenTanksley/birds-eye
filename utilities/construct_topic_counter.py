@@ -46,16 +46,16 @@ if __name__ == '__main__':
     for item in collection:
         strings.append(' '.join([sub_item for sub_item in item]))
 
-    print(counter)
+    # print(counter)
     # count_vectorizer = CountVectorizer(ngram_range=(1, 3), encoding='utf-8')
     # count_vectorizer.fit_transform(strings)
     #
     # feature_names = count_vectorizer.get_feature_names_out()
-    #
-    # wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(counter)
-    #
-    # plt.figure(figsize=(10, 5))
-    # plt.imshow(wordcloud, interpolation='bilinear')
-    # plt.axis('off')
-    # plt.title(f'News Topics by Keyword Frequency')
-    # plt.show()
+
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(counter)
+
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis('off')
+    plt.title(f'News Topics by Keyword Frequency')
+    plt.show()

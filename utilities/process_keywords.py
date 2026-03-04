@@ -5,19 +5,19 @@ import spacy
 from spacy import displacy
 
 
-def recognize_keywords(keyword_list: list[str] = None):
+def recognize_keywords(keyword_list: str = None):
     nlp = spacy.load('en_core_web_sm')
 
     if keyword_list is None:
         return
 
-    sentence = " ".join(keyword_list)
+    # sentence = " ".join(keyword_list)
+    sentence = keyword_list
     doc = nlp(sentence)
     return doc
 
 if __name__ == '__main__':
-    file_path = sys.argv[1:][-1]
-    # file_path = "/home/stephen-tanksley/Documents/CODE/Python_Projects/birds-eye/data/"
+    file_path = "/home/stephen-tanksley/Documents/CODE/Python_Projects/birds-eye/data/"
     latest_item_path = os.path.join(file_path, max(os.listdir(file_path)))
     with open(latest_item_path, 'r') as file:
         data = json.load(file)
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
         for result in unpacked:
             if len(result) > 0:
-                results.append(result.get('keywords'))
+                results.append(result.get('headline'))
 
     dates = []
     ordinals = []
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         'TIME': times
     }
 
-    for item in results[:20]:
+    for item in results:
         processed_keywords = recognize_keywords(item)
 
         for ent in processed_keywords.ents:
@@ -61,7 +61,8 @@ if __name__ == '__main__':
 
     for key, value in sort_bucket.items():
         print(key)
-        print('\n', value)
+        print('\t', value)
+
 
     # print("Orgs: ", orgs)
     # print("Persons: ", persons)

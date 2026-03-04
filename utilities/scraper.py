@@ -86,7 +86,7 @@ async def fetch_html(context: BrowserContext, url: str, sem: Semaphore) -> dict[
                 seen.add(href)
                 links.append({
                     "url": href,
-                    # "headline": text,
+                    "headline": text,
                     "timestamp": str(datetime.now(timezone.utc)),
                     "keywords": keywords
                 })
