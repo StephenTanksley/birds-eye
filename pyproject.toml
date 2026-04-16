@@ -1,0 +1,16 @@
+[project]
+name = "birds-eye"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "nltk>=3.9.2",
+    "pandas>=2.3.3",
+    "playwright>=1.55.0",
+    "pyqt6>=6.10.0",
+    "pyspark>=4.0.1",
+    "python-dotenv>=1.2.1",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.44",
+    "wordcloud>=1.9.4",
+]
